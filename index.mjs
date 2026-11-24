@@ -36,11 +36,15 @@ export function multiRoomTotal(rooms = [], wastePercent = 10) {
   };
 }
 
+function ceilSafe(n) {
+  return Math.ceil(n - 1e-9);
+}
+
 export function flooringBoxes(netSqFt, wastePercent = 10, sqFtPerBox = 22) {
   const totalSqFt = Math.max(0, Number(netSqFt)) * (1 + Number(wastePercent) / 100);
   return {
     totalSqFt,
-    boxes: Math.ceil(totalSqFt / Number(sqFtPerBox))
+    boxes: ceilSafe(totalSqFt / Number(sqFtPerBox))
   };
 }
 
@@ -50,8 +54,8 @@ export function tileEstimate(netSqFt, tileWidthIn = 12, tileLengthIn = 24, waste
   return {
     totalSqFt,
     sqFtPerTile,
-    tiles: Math.ceil(totalSqFt / sqFtPerTile),
-    boxes: Math.ceil(totalSqFt / Number(sqFtPerBox))
+    tiles: ceilSafe(totalSqFt / sqFtPerTile),
+    boxes: ceilSafe(totalSqFt / Number(sqFtPerBox))
   };
 }
 
@@ -68,7 +72,7 @@ export function roofSurfaceAndShingles(houseLengthFt, houseWidthFt, overhangFt =
   const surfaceSqFt = footprintSqFt * pitchMultiplier;
   const orderSqFt = surfaceSqFt * (1 + Number(wastePercent) / 100);
   const roofingSquares = orderSqFt / 100;
-  const shingleBundles = Math.ceil(roofingSquares * 3);
+  const shingleBundles = ceilSafe(roofingSquares * 3);
   return { footprintSqFt, pitchMultiplier, surfaceSqFt, orderSqFt, roofingSquares, shingleBundles };
 }
 
@@ -78,8 +82,8 @@ export function lawnSodAndFertilizer(sections = [], wastePercent = 10, sqFtPerRo
   return {
     netSqFt,
     acres: netSqFt / 43560,
-    sodRolls: Math.ceil(withWaste / Number(sqFtPerRoll)),
-    sodPallets: Math.ceil(withWaste / 450),
+    sodRolls: ceilSafe(withWaste / Number(sqFtPerRoll)),
+    sodPallets: ceilSafe(withWaste / 450),
     fertilizerLbs: (netSqFt / 1000) * Number(fertLbsPer1000)
   };
 }
